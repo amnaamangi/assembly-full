@@ -1,1 +1,424 @@
+macro clear
+    mov ah, 0fh
+    int 10h   
+    mov ah, 0
+    int 10h
+    
+endm
 
+macro newline
+    mov ah,2
+    mov dl,10
+    int 21h
+    mov dl,13
+    int 21h
+    
+endm
+
+macro print p1 
+    lea dx,p1
+    mov ah,9
+    int 21h
+    
+endm 
+
+macro read
+    mov ah,1
+    int 21h
+    
+endm    
+
+macro total_price p1
+    mov bl,p1
+    newline
+    print quantity
+    read
+     
+    sub al,48    
+    mul bl
+    aam
+    
+    mov cx,ax
+    add ch,48
+    add cl,48
+    
+    newline
+    print price       
+    
+    mov ah,2
+    mov dl,ch
+    int 21h         
+    mov dl,cl
+    int 21h
+    
+    print extra
+    
+endm      
+
+.model small
+.stack 
+.data 
+
+    title1   db "FOOD ORDERING SYSTEM$"
+    prompt1  db "1.STARTERS $"
+    prompt2  db "2.MAIN COURSE $"  
+    prompt3  db "3.FAST FOOD $"          
+    prompt4  db "4.DESSERT $" 
+    prompt5  db "5.DRINKS $"      
+    exit_msg db "Press (Esc) for EXIT $"
+    prompt6  db "********* ENTER YOUR CHOICE ******** $"
+    prompt7  db "INVALID ENTRY: $"    
+    prompt8  db "    ITEM                        PRICE $"                                        
+    back     db "PRESS 1 TO GO BACK TO MAIN MENU: $"        
+    order    db "ENTER YOUR CHOICE: $"  
+    quantity db "QUANTITY: $"      
+    price    db "TOTAL AMOUNT IS: $"            
+    extra    db "0 PKR$"
+
+;Menu FOR STARTERS:             
+    Starters1 db '1.  FRENCH TOAST                20PKR $'
+    Starters2 db '2.  SPRING ROLL                 30PKR $'
+    Starters3 db '3.  PANCAKES                    50PKR $'
+    Starters4 db '4.  CAESER SALAD                70PKR $'
+    Starters5 db '5.  ONION RINGS                 90PKR $'  
+    
+;Menu FOR MAINCOURSE:             
+    Main_Course1 db '1.  FRIED RICE                  20PKR $'
+    Main_Course2 db '2.  DAAL CHAWAL                 30PKR $'
+    Main_Course3 db '3.  KARAHI                      50PKR $'
+    Main_Course4 db '4.  BIRYANI                     70PKR $'
+    Main_Course5 db '5.  TIKKA                       90PKR $' 
+    
+;Menu FOR FASTFOOD:             
+    Fast_Food1 db '1.  FRENCH FRIES                20PKR $'
+    Fast_Food2 db '2.  CLUB SANDWICH               30PKR $'
+    Fast_Food3 db '3.  BROAST                      50PKR $'
+    Fast_Food4 db '4.  PIZZA                       70PKR $'
+    Fast_Food5 db '5.  ZINGER BURGER               90PKR $' 
+    
+;Menu FOR DESSERT:             
+    Dessert1 db '1.  ICE CREAM                   20PKR $'
+    Dessert2 db '2.  CUP CAKE                    30PKR $'
+    Dessert3 db '3.  GULAB JAMUN                 50PKR $'
+    Dessert4 db '4.  KHEER                       70PKR $'
+    Dessert5 db '5.  WAFFLES                     90PKR $'           
+                                                              
+;Menu FOR DRINKS:             
+    Drinks1 db '1.  SOFT DRINK                  20PKR $'
+    Drinks2 db '2.  JUICE                       30PKR $'
+    Drinks3 db '3.  CHAI                        50PKR $'
+    Drinks4 db '4.  COFFEE                      70PKR $'
+    Drinks5 db '5.  HOT CHOCOLATE               90PKR $'           
+
+.code
+main proc
+   
+   mov ax,@data
+   mov ds,ax
+
+Menu:
+    clear
+    
+    print title1 
+    newline
+    
+    newline
+    print prompt1
+    
+    newline
+    print prompt2
+    
+    newline
+    print prompt3
+    
+    newline
+    print prompt4
+    
+    newline
+    print prompt5 
+    
+    newline
+    newline
+    print exit_msg 
+    
+    newline
+    newline
+    print prompt6 
+    
+    newline
+    
+    read
+    mov bh,al
+    sub bh,48  
+     
+    cmp bh,1
+    je Starters
+   
+    cmp bh,2
+    je Main_Course
+   
+    cmp bh,3
+    je Fast_Food
+   
+    cmp bh,4
+    je Dessert
+   
+    cmp bh,5
+    je Drinks
+    
+    add bh,48
+    cmp bh,27   
+    je Exit  
+   
+    jmp Invalid
+    
+    loop Menu  
+   
+Starters: 
+    
+    clear
+    print prompt8
+    newline
+    
+    newline
+    print Starters1
+    
+    newline
+    print Starters2
+    
+    newline
+    print Starters3
+    
+    newline
+    print Starters4
+    
+    newline
+    print Starters5
+    
+    newline
+    newline
+    print order
+
+    call compare
+     
+    loop Starters  
+   
+Main_Course: 
+    
+    clear
+    print prompt8
+    newline
+    
+    newline
+    print Main_Course1
+    
+    newline
+    print Main_Course2
+    
+    newline
+    print Main_Course3
+    
+    newline
+    print Main_Course4
+    
+    newline
+    print Main_Course5
+    
+    newline
+    newline
+    print order
+    
+    call compare  
+    loop Main_Course
+   
+Fast_Food: 
+
+    clear
+    print prompt8
+    newline
+    
+    newline
+    print Fast_Food1
+    
+    newline
+    print Fast_Food2
+    
+    newline
+    print Fast_Food3
+    
+    newline
+    print Fast_Food4
+    
+    newline
+    print Fast_Food5
+    
+    newline
+    newline
+    print order
+
+    call compare
+      
+    loop Fast_Food
+   
+Dessert: 
+
+    clear
+    print prompt8
+    newline
+    
+    newline
+    print Dessert1
+    
+    newline
+    print Dessert2
+    
+    newline
+    print Dessert3
+    
+    newline
+    print Dessert4
+    
+    newline
+    print Dessert5
+    
+    newline
+    newline
+    print order
+
+    call compare
+      
+    loop Dessert
+   
+Drinks: 
+    
+    clear
+    print prompt8
+    newline
+    
+    newline
+    print Drinks1
+    
+    newline
+    print Drinks2
+    
+    newline
+    print Drinks3
+    
+    newline
+    print Drinks4
+    
+    newline
+    print Drinks5
+    
+    newline
+    newline
+    print order
+
+    call compare
+      
+    loop Drinks
+   
+Twenty:
+   
+    total_price 02
+    
+    call Main_Menu
+         
+    loop Twenty
+
+Thirty: 
+    
+    total_price 03
+    
+    call Main_Menu
+         
+    loop Thirty
+    
+Fifty:
+    
+    total_price 05
+    
+    call Main_Menu
+         
+    loop Fifty
+
+Seventy:
+
+    total_price 07
+    
+    call Main_Menu
+         
+    loop Seventy
+    
+Ninety:           
+
+    total_price 09
+    
+    call Main_Menu
+         
+    loop Ninety
+    
+Invalid:
+    
+    newline
+    print prompt7
+    
+    jmp Exit
+    
+Exit:   
+   mov ah,4ch
+   int 21h    
+
+    main endp
+
+proc Main_Menu    
+    
+    newline
+    newline
+    print back
+   
+    newline
+    print exit_msg
+    
+    newline
+    newline
+    print prompt6
+    newline
+    
+    mov ah,1
+    int 21h 
+    
+    cmp al,49
+    je Menu
+    
+    cmp al,27
+    je Exit
+    
+    Main_Menu endp 
+
+proc compare
+        
+    read
+    mov bl,al
+    sub bl,48
+    
+    cmp bl,1
+    je Twenty
+    
+    cmp bl,2
+    je Thirty
+    
+    cmp bl,3
+    je Fifty
+    
+    cmp bl,4
+    je Seventy
+    
+    cmp bl,5
+    je Ninety
+    
+    jmp Invalid
+    
+    compare endp
+    
+end main
